@@ -5,11 +5,34 @@ Used as a Go coding exercise for the Repository Engineer role.
 
 ## Tech Stack
 
-- **Language**: Go 1.22
+- **Language**: Go 1.22+
 - **Module**: `github.com/example/ministore`
 - **Storage**: In-memory (`MemoryStore`) + optional SQLite (`SQLiteStore`, pure-Go via `modernc.org/sqlite`)
 - **Build**: `make build` / `make cross`
-- **Testing**: `go test ./...`
+
+## Go Installation
+
+If `go` is not recognized, your Go toolchain is likely installed at a custom path.
+
+**Windows (this machine):**
+```
+C:\Go\go\bin\go.exe
+```
+Add to PATH permanently:
+```powershell
+[Environment]::SetEnvironmentVariable("Path", "C:\Go\go\bin;$env:PATH", "User")
+```
+
+**Other common Go locations:**
+- `C:\Program Files\Go\bin\go.exe`
+- `C:\Go\bin\go.exe`
+- `~/.local/go/bin/go` (Linux/macOS)
+
+To find Go on your system:
+```powershell
+# Windows: search in common locations
+Get-ChildItem -Path C:\ -Recurse -Filter "go.exe" -ErrorAction SilentlyContinue | Select-Object -First 5 FullName
+```
 
 ## File Responsibilities
 
@@ -23,6 +46,10 @@ Used as a Go coding exercise for the Repository Engineer role.
 
 ## Quick Commands
 
+Run these from the `ministrore-starter/` directory.
+
+### Linux / macOS / Git Bash / WSL
+
 ```bash
 # Run tests
 go test -v ./...
@@ -33,18 +60,35 @@ go build -o bin/ministore ./cmd/ministore
 # Build with SQLite support
 go build -tags sqlite -o bin/ministore ./cmd/ministore
 
-# Cross-compile (linux/amd64 + darwin/arm64)
+# Cross-compile
 GOOS=linux GOARCH=amd64 go build -tags sqlite -o bin/ministore-linux-amd64 ./cmd/ministore
 GOOS=darwin GOARCH=arm64 go build -tags sqlite -o bin/ministore-darwin-arm64 ./cmd/ministore
 
-# Run CLI REPL (in-memory)
+# Run CLI REPL
 ./bin/ministore
-# then type: put doc1 hello
-# then type: get doc1
-# then type: exit
+# Commands: put <id> <content>
+#           get <id>
+#           children <parentID>
+#           exit
+```
 
-# Run CLI REPL (SQLite)
-./bin/ministore --db ./data.db
+### Windows PowerShell / CMD
+
+```powershell
+# Navigate to project
+cd C:\Users\nurul\Repositories\Excercise\ministrore-starter
+
+# Run tests (use full path if 'go' not in PATH)
+& "C:\Go\go\bin\go.exe" test -v ./...
+
+# Build memory-only binary
+& "C:\Go\go\bin\go.exe" build -o bin/ministore ./cmd/ministore
+
+# Build with SQLite support
+& "C:\Go\go\bin\go.exe" build -tags sqlite -o bin/ministore ./cmd/ministore
+
+# Run CLI REPL
+.\bin\ministore.exe
 ```
 
 ## Architecture
@@ -52,7 +96,7 @@ GOOS=darwin GOARCH=arm64 go build -tags sqlite -o bin/ministore-darwin-arm64 ./c
 ```
 store.Store (interface)
   ├── store.MemoryStore   (in-memory map + RWMutex)
-  └── store.SQLiteStore    (modernc.org/sqlite, build with -tags sqlite)
+  └── store.SQLiteStore   (modernc.org/sqlite, build with -tags sqlite)
 ```
 
 ## Key Constraints
